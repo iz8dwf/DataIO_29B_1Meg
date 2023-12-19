@@ -1,0 +1,61 @@
+Name     29B1MU3 ;
+PartNo   u3 ;
+Date     03/10/2022 ;
+Revision 03 ;
+Designer IZ8DWF ;
+Company  IZ8DWF ;
+Assembly None ;
+Location ;
+/* suitable devices:
+Device   G22V10 ;
+Device   P22CV10 ;
+Device   P22V10 ;
+*/
+ 
+
+
+/* *************** INPUT PINS *************** */
+PIN   1  = n_v02  ; /* active clock phase    */ 
+PIN   23 =  n_wr; /* cpu write */
+PIN   22 =  a1 ; /* cpu addr bus       */ 
+PIN    2 =  a3 ;/*                    */ 
+PIN    3 =  a5 ; /*                    */ 
+PIN    4 =  a7 ; /*                     */ 
+PIN    5 =  a15 ; /*                     */ 
+PIN    6 =  a14 ; /*                    */ 
+PIN    7 =  a13 ; /*                     */ 
+PIN    8 =  a12 ; /*                     */ 
+PIN    9 =  a11 ; /*                     */ 
+PIN   10 =  a10 ; /*                    */ 
+PIN   11 =  a9 ; /*                     */ 
+PIN   13 =  a8 ; /*                     */ 
+PIN   19 =  a2 ; /* cpu address bus    */
+PIN   20 =  a6 ; /* cpu address bus  	*/
+PIN   21 =  a4 ; /*                     */ 
+
+/* *************** OUTPUT PINS ******************* */
+PIN   18 = !bank  ; /* bank address clock   */ 
+PIN   17 = !ramce ; /* SRAM enable, active low  */
+PIN   16 = !perr  ; /* parity error data bit (D7)  */ 
+PIN   15 = !en  ; /* transceivers enable to main bus, active low  */ 
+
+
+FIELD cpu_a = [a15..1];
+
+/* ram address registers */
+/* writing to $E300 latches D0..D3 */
+/* writing to $E301 latches D7,D6 */
+/* bank latches are external, just providing an enable */
+/* A0 decoding is external */
+/* reading from $E302 reads parity error on D7 */
+
+bank =  (cpu_a:[E300] & !n_v02 & !n_wr); 
+parity_en = (cpu_a:[E302] & !n_v02 & n_wr);
+perr.oe = parity_en;
+perr = parity_en; 
+
+/* ram is accessed with a 16k window from $2000 to $5FFF */
+ramce =  (cpu_a:[2000..5FFF] & !n_v02);
+
+/* enables bus transceiver when either registers or ram are accessed */
+en = ramce # bank # parity_en;
