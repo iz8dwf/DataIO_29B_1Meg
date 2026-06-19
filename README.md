@@ -6,7 +6,7 @@ See the image directory before building and installing it. The pin header connec
 
 In `gerber_contrib` I've put a contributed PCB version with mounting holes. Original Data I/O expansion was large and heavier and definitely required mounting holes. If you're concerned about board stability you can use the contributed version. My own board didn't move in years of use anyway.
 
-If you have a model 29A (not B) and you feel like experimenting, contact me :)
+If you have a model 29A (not B), check the other repository.
 
 USE AT YOUR OWN RISK.
 
